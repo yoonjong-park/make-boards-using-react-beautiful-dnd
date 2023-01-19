@@ -1,5 +1,8 @@
 import React from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { getModeForUsageLocation } from "typescript";
+
+const toDos = ["a", "b", "c", "d", "e", "f"];
 
 function App() {
   const onDragEnd = () => {
@@ -12,22 +15,17 @@ function App() {
         <Droppable droppableId="one">
           {magic => (
             <ul ref={magic.innerRef} {...magic.droppableProps}>
-              <Draggable draggableId="first" index={0}>
-                {magic => (
-                  <li ref={magic.innerRef} {...magic.draggableProps}>
-                    <span {...magic.dragHandleProps}>😆</span>
-                    One
-                  </li>
-                )}
-              </Draggable>
-              <Draggable draggableId="second" index={1}>
-                {magic => (
-                  <li ref={magic.innerRef} {...magic.draggableProps}>
-                    <span {...magic.dragHandleProps}>😆</span>
-                    Two
-                  </li>
-                )}
-              </Draggable>
+              {toDos.map((toDo, index) => (
+                <Draggable draggableId={toDo} index={index}>
+                  {magic => (
+                    <li ref={magic.innerRef} {...magic.draggableProps}>
+                      <span {...magic.dragHandleProps}>😆</span>
+                      {toDo}
+                    </li>
+                  )}
+                </Draggable>
+              ))}
+              {magic.placeholder}
             </ul>
           )}
         </Droppable>
