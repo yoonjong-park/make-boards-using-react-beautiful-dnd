@@ -1,12 +1,26 @@
 import React from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { getModeForUsageLocation } from "typescript";
-
-const toDos = ["a", "b", "c", "d", "e", "f"];
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from "react-beautiful-dnd";
+import { useRecoilState } from "recoil";
+import { toDoState } from "./atoms";
 
 function App() {
-  const onDragEnd = () => {
-    console.log("이동");
+  const [toDos, setToDos] = useRecoilState(toDoState);
+
+  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
+    if (!destination) return;
+    setToDos(oldToDos => {
+      const toDosCopy = [...oldToDos];
+      // 1) Delete item on source.index
+      toDosCopy.splice(source.index, 1);
+      // 2) Put back the item on the destinaton.index
+      toDosCopy.splice(destination?.index, 0, draggableId);
+      return toDosCopy;
+    });
   };
 
   return (
@@ -16,7 +30,7 @@ function App() {
           {magic => (
             <ul ref={magic.innerRef} {...magic.droppableProps}>
               {toDos.map((toDo, index) => (
-                <Draggable draggableId={toDo} index={index}>
+                <Draggable key={toDo} draggableId={toDo} index={index}>
                   {magic => (
                     <li ref={magic.innerRef} {...magic.draggableProps}>
                       <span {...magic.dragHandleProps}>😆</span>
