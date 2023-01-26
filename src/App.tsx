@@ -7,6 +7,7 @@ import {
 } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import { toDoState } from "./atoms";
+import DragabbleCard from "./Components/DragabbleCard";
 
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
@@ -30,14 +31,7 @@ function App() {
           {magic => (
             <ul ref={magic.innerRef} {...magic.droppableProps}>
               {toDos.map((toDo, index) => (
-                <Draggable key={toDo} draggableId={toDo} index={index}>
-                  {magic => (
-                    <li ref={magic.innerRef} {...magic.draggableProps}>
-                      <span {...magic.dragHandleProps}>😆</span>
-                      {toDo}
-                    </li>
-                  )}
-                </Draggable>
+                <DragabbleCard key={toDo} toDo={toDo} index={index} />
               ))}
               {magic.placeholder}
             </ul>
