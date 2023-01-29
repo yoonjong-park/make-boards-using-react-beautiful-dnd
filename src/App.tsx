@@ -7,32 +7,46 @@ import styled from "styled-components";
 import Board from "./Components/Board";
 
 const Wrapper = styled.div`
-  padding: 20px 10px;
-  background-color: ${props => props.theme.boardColor};
-  border-radius: 5px;
-  min-height: 200px;
+  display: flex;
+  width: 100vw;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 `;
 
 const Boards = styled.div`
-  display: grid;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   width: 100%;
   gap: 10px;
-  grid-template-columns: repeat(3, 1fr);
 `;
 
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
 
-  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
+  const onDragEnd = (info: DropResult) => {
+    const { destination, draggableId, source } = info;
     if (!destination) return;
-    // setToDos(oldToDos => {
-    //   const toDosCopy = [...oldToDos];
-    //   // 1) Delete item on source.index
-    //   toDosCopy.splice(source.index, 1);
-    //   // 2) Put back the item on the destinaton.index
-    //   toDosCopy.splice(destination?.index, 0, draggableId);
-    //   return toDosCopy;
-    // });
+
+    if (destination?.droppableId === source.droppableId) {
+      // same board
+      setToDos(allBoards => {
+        const boardCopy = [...allBoards[source.droppableId]];
+        boardCopy.splice(source.index, 1);
+        boardCopy.splice(destination?.index, 0, draggableId);
+        return {
+          ...allBoards,
+          [source.droppableId]: boardCopy,
+        };
+      });
+    }
+
+    if (destination?.droppableId !== source.droppableId) {
+      // cross board movement
+    } else {
+    }
   };
 
   return (
