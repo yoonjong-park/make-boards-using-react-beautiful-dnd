@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useRef } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import DragabbleCard from "./DragabbleCard";
@@ -43,9 +43,19 @@ interface IBoardProps {
 }
 
 const Board = ({ toDos, boardId }: IBoardProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const onClick = useCallback(() => {
+    inputRef.current?.focus();
+    setTimeout(() => {
+      inputRef.current?.blur();
+    }, 5000); // REMOVE focus after 5s
+  }, []);
+
   return (
     <Wrapper>
       <Title>{boardId}</Title>
+      <input ref={inputRef} placeholder="grab me" />
+      <button onClick={onClick}>click me</button>
       <Droppable droppableId={boardId}>
         {(magic, snapshot) => (
           <Area
